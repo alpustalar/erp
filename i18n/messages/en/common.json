@@ -1,0 +1,18 @@
+{
+  "Common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "searchPlaceholder": "Search patients, leads or operations...",
+    "loading": "Loading",
+    "confirm": "Confirm",
+    "appTitle": "MED ERP",
+    "appSubtitle": "Management Panel",
+    "toggleExpand": "Expand menu",
+    "toggleCollapse": "Collapse menu",
+    "clinicManager": "Clinic Manager",
+    "userProfile": "{name} ({role})"
+  }
+}

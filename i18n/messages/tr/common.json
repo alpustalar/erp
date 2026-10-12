@@ -1,0 +1,18 @@
+{
+  "Common": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "search": "Ara",
+    "searchPlaceholder": "Hasta, lead veya işlem ara...",
+    "loading": "Yükleniyor",
+    "confirm": "Onayla",
+    "appTitle": "MED ERP",
+    "appSubtitle": "Yönetim Paneli",
+    "toggleExpand": "Menüyü genişlet",
+    "toggleCollapse": "Menüyü daralt",
+    "clinicManager": "Klinik Yöneticisi",
+    "userProfile": "{name} ({role})"
+  }
+}
