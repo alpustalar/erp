@@ -17,6 +17,7 @@ export function Topbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accent, setAccent] = useState('blue');
+  const [contrast, setContrast] = useState('standard');
   const isSearchExpanded = searchFocused || searchQuery.length > 0;
 
   const current = clinics.find((c) => c.key === clinic);
@@ -31,6 +32,10 @@ export function Topbar() {
   useEffect(() => {
     document.documentElement.dataset.accent = accent;
   }, [accent]);
+
+  useEffect(() => {
+    document.documentElement.dataset.contrast = contrast;
+  }, [contrast]);
 
   return (
     // 'w-full' ve sticky yapıyı koruyup çift padding çakışmasını engelliyoruz
@@ -149,6 +154,32 @@ export function Topbar() {
                         {accent === item.key && <Check className="size-4 text-white" />}
                       </span>
                       <span className="text-[10px] text-muted-foreground">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-4">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Kontrast</p>
+                <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1" role="radiogroup" aria-label="Kontrast seviyesi">
+                  {[
+                    { key: 'soft', label: 'Yumuşak' },
+                    { key: 'standard', label: 'Standart' },
+                    { key: 'high', label: 'Yüksek' },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      role="radio"
+                      aria-checked={contrast === item.key}
+                      onClick={() => setContrast(item.key)}
+                      className={cn(
+                        'rounded-md px-2 py-1.5 text-[11px] transition-colors',
+                        contrast === item.key
+                          ? 'bg-card font-medium text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      )}
+                    >
+                      {item.label}
                     </button>
                   ))}
                 </div>

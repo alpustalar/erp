@@ -85,6 +85,9 @@
 
 html[data-accent='violet'] {
   --primary: oklch(0.56 0.18 290);
+  --card: oklch(0.985 0.012 290);
+  --muted: oklch(0.955 0.022 290);
+  --secondary: oklch(0.965 0.018 290);
   --ring: oklch(0.56 0.18 290);
   --accent: oklch(0.95 0.03 290);
   --accent-foreground: oklch(0.46 0.15 290);
@@ -95,6 +98,9 @@ html[data-accent='violet'] {
 
 html[data-accent='teal'] {
   --primary: oklch(0.54 0.14 180);
+  --card: oklch(0.985 0.012 180);
+  --muted: oklch(0.955 0.022 180);
+  --secondary: oklch(0.965 0.018 180);
   --ring: oklch(0.54 0.14 180);
   --accent: oklch(0.94 0.04 180);
   --accent-foreground: oklch(0.42 0.12 180);
@@ -105,6 +111,9 @@ html[data-accent='teal'] {
 
 html[data-accent='amber'] {
   --primary: oklch(0.68 0.16 75);
+  --card: oklch(0.985 0.012 85);
+  --muted: oklch(0.955 0.022 85);
+  --secondary: oklch(0.965 0.018 85);
   --ring: oklch(0.68 0.16 75);
   --accent: oklch(0.96 0.04 85);
   --accent-foreground: oklch(0.48 0.12 65);
@@ -115,6 +124,9 @@ html[data-accent='amber'] {
 
 html[data-accent='rose'] {
   --primary: oklch(0.59 0.18 15);
+  --card: oklch(0.985 0.012 15);
+  --muted: oklch(0.955 0.022 15);
+  --secondary: oklch(0.965 0.018 15);
   --ring: oklch(0.59 0.18 15);
   --accent: oklch(0.95 0.04 15);
   --accent-foreground: oklch(0.48 0.14 15);
@@ -156,6 +168,30 @@ html[data-accent='rose'] {
   --sidebar-accent-foreground: oklch(0.82 0.11 252);
   --sidebar-border: oklch(0.32 0.03 258);
   --sidebar-ring: oklch(0.66 0.16 252);
+}
+
+html[data-contrast='soft'] {
+  --border: oklch(0.94 0.008 247);
+  --card: oklch(0.99 0.004 247);
+  --muted: oklch(0.975 0.008 247);
+}
+
+html[data-contrast='high'] {
+  --border: oklch(0.82 0.018 247);
+  --card: oklch(0.975 0.012 247);
+  --muted: oklch(0.925 0.018 247);
+}
+
+.dark[data-contrast='soft'] {
+  --border: oklch(0.29 0.022 258);
+  --card: oklch(0.215 0.022 258);
+  --muted: oklch(0.245 0.022 258);
+}
+
+.dark[data-contrast='high'] {
+  --border: oklch(0.44 0.035 258);
+  --card: oklch(0.27 0.035 258);
+  --muted: oklch(0.34 0.035 258);
 }
 
 @keyframes settings-spin {
