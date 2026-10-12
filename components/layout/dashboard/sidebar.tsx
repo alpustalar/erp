@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { Activity, ChevronDown, ChevronLeft } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -41,9 +42,26 @@ function SidebarMain() {
   const t = useTranslations();
 
   const { state, toggleSidebar } = useSidebar();
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
   const isCollapsed = state === 'collapsed';
+  const locale = params.locale ?? 'en';
 
-  const [activeKey, setActiveKey] = React.useState('Navigation.items.overview');
+  const moduleSlugs: Record<string, string> = {
+    'Navigation.items.overview': '',
+    'Navigation.items.patients': 'patients',
+    'Navigation.items.appointments': 'appointments',
+    'Navigation.items.inventory': 'inventory',
+    'Navigation.items.finance': 'finance',
+    'Navigation.items.crm': 'crm',
+    'Navigation.items.marketing': 'marketing',
+    'Navigation.items.omnichannelMessaging': 'inbox',
+    'Navigation.items.workforce': 'workforce',
+    'Navigation.items.automations': 'automations',
+  };
+
+  const activeModule = pathname.split('/').filter(Boolean).at(-1) ?? '';
   const [openMenus, setOpenMenus] = React.useState<Record<string, boolean>>({});
 
   const toggleMenu = (key: string) => {
@@ -124,7 +142,10 @@ function SidebarMain() {
                 <SidebarMenu>
                   {group.items.map((item) => {
                     const itemLabel = t(item.translationKey);
-                    const isActive = activeKey === item.translationKey;
+                    const itemModule = moduleSlugs[item.translationKey];
+                    const isActive = itemModule
+                      ? activeModule === itemModule
+                      : !activeModule && item.translationKey === 'Navigation.items.overview';
 
                     const hasChildren =
                       !isCollapsed && Boolean(item.children?.length);
@@ -137,10 +158,11 @@ function SidebarMain() {
                           isActive={isActive && (!hasChildren || isCollapsed)}
                           tooltip={itemLabel}
                           onClick={() => {
+                            router.push(
+                              itemModule ? `/${locale}/${itemModule}` : `/${locale}`
+                            );
                             if (hasChildren) {
                               toggleMenu(item.translationKey);
-                            } else {
-                              setActiveKey(item.translationKey);
                             }
                           }}
                           className="cursor-pointer"
@@ -178,8 +200,7 @@ function SidebarMain() {
                           <SidebarMenuSub className="relative my-1 ml-4 space-y-1 border-l border-sidebar-border/60 pl-3">
                             {item.children?.map((child, index, arr) => {
                               const childLabel = t(child.translationKey);
-                              const isChildActive =
-                                activeKey === child.translationKey;
+                              const isChildActive = false;
                               const isLast = index === arr.length - 1;
 
                               return (
@@ -197,9 +218,11 @@ function SidebarMain() {
 
                                   <SidebarMenuSubButton
                                     isActive={isChildActive}
-                                    onClick={() =>
-                                      setActiveKey(child.translationKey)
-                                    }
+                                    onClick={() => {
+                                      if (itemModule) {
+                                        router.push(`/${locale}/${itemModule}`);
+                                      }
+                                    }}
                                     className="cursor-pointer"
                                   >
                                     <span className="flex-1 truncate">
