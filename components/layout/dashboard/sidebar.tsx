@@ -108,7 +108,7 @@ function SidebarMain() {
       </SidebarHeader>
 
       {/* Navigation */}
-      <SidebarContent className={cn('py-4', isCollapsed ? 'px-1' : 'px-2')}>
+      <SidebarContent className={cn('py-5', isCollapsed ? 'px-1' : 'px-2')}>
         {navGroups.map((group) => {
           const groupTitle = t(group.groupKey);
 

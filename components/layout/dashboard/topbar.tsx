@@ -21,7 +21,7 @@ export function Topbar() {
 
   return (
     // 'w-full' ve sticky yapıyı koruyup çift padding çakışmasını engelliyoruz
-    <div className="flex h-16 w-full items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md md:px-6 shrink-0">
+    <div className="flex h-16 w-full items-center gap-3 border-b border-border/80 bg-background/95 px-4 md:px-6 shrink-0">
       {/* Mobil Sidebar Açma/Kapama Butonu */}
       <SidebarTrigger className="lg:hidden shrink-0" />
 
