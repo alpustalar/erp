@@ -93,6 +93,8 @@ html[data-accent='violet'] {
   --accent-foreground: oklch(0.46 0.15 290);
   --chart-1: oklch(0.56 0.18 290);
   --sidebar-primary: oklch(0.56 0.18 290);
+  --sidebar-accent: oklch(0.95 0.03 290);
+  --sidebar-accent-foreground: oklch(0.46 0.15 290);
   --sidebar-ring: oklch(0.56 0.18 290);
 }
 
@@ -106,6 +108,8 @@ html[data-accent='teal'] {
   --accent-foreground: oklch(0.42 0.12 180);
   --chart-1: oklch(0.54 0.14 180);
   --sidebar-primary: oklch(0.54 0.14 180);
+  --sidebar-accent: oklch(0.94 0.04 180);
+  --sidebar-accent-foreground: oklch(0.42 0.12 180);
   --sidebar-ring: oklch(0.54 0.14 180);
 }
 
@@ -119,6 +123,8 @@ html[data-accent='amber'] {
   --accent-foreground: oklch(0.48 0.12 65);
   --chart-1: oklch(0.68 0.16 75);
   --sidebar-primary: oklch(0.68 0.16 75);
+  --sidebar-accent: oklch(0.96 0.04 85);
+  --sidebar-accent-foreground: oklch(0.48 0.12 65);
   --sidebar-ring: oklch(0.68 0.16 75);
 }
 
@@ -132,7 +138,37 @@ html[data-accent='rose'] {
   --accent-foreground: oklch(0.48 0.14 15);
   --chart-1: oklch(0.59 0.18 15);
   --sidebar-primary: oklch(0.59 0.18 15);
+  --sidebar-accent: oklch(0.95 0.04 15);
+  --sidebar-accent-foreground: oklch(0.48 0.14 15);
   --sidebar-ring: oklch(0.59 0.18 15);
+}
+
+html.dark[data-accent='violet'] {
+  --sidebar-primary: oklch(0.7 0.16 290);
+  --sidebar-accent: oklch(0.29 0.06 290);
+  --sidebar-accent-foreground: oklch(0.86 0.1 290);
+  --sidebar-ring: oklch(0.7 0.16 290);
+}
+
+html.dark[data-accent='teal'] {
+  --sidebar-primary: oklch(0.68 0.14 180);
+  --sidebar-accent: oklch(0.29 0.05 180);
+  --sidebar-accent-foreground: oklch(0.84 0.09 180);
+  --sidebar-ring: oklch(0.68 0.14 180);
+}
+
+html.dark[data-accent='amber'] {
+  --sidebar-primary: oklch(0.76 0.15 75);
+  --sidebar-accent: oklch(0.3 0.06 75);
+  --sidebar-accent-foreground: oklch(0.88 0.1 75);
+  --sidebar-ring: oklch(0.76 0.15 75);
+}
+
+html.dark[data-accent='rose'] {
+  --sidebar-primary: oklch(0.72 0.16 15);
+  --sidebar-accent: oklch(0.3 0.06 15);
+  --sidebar-accent-foreground: oklch(0.88 0.1 15);
+  --sidebar-ring: oklch(0.72 0.16 15);
 }
 
 .dark {
