@@ -206,6 +206,29 @@ html[data-contrast='high'] {
   --accent: oklch(0.32 0.06 var(--accent-hue, 258));
 }
 
+/* Soft contrast keeps sections close to the dark canvas; high contrast opens them up. */
+.dark[data-contrast='soft'][data-accent='blue'],
+.dark[data-contrast='soft'][data-accent='violet'],
+.dark[data-contrast='soft'][data-accent='teal'],
+.dark[data-contrast='soft'][data-accent='amber'],
+.dark[data-contrast='soft'][data-accent='rose'] {
+  --card: oklch(0.205 0.022 var(--accent-hue, 258));
+  --muted: oklch(0.225 0.022 var(--accent-hue, 258));
+  --secondary: oklch(0.245 0.024 var(--accent-hue, 258));
+  --accent: oklch(0.275 0.045 var(--accent-hue, 258));
+}
+
+.dark[data-contrast='high'][data-accent='blue'],
+.dark[data-contrast='high'][data-accent='violet'],
+.dark[data-contrast='high'][data-accent='teal'],
+.dark[data-contrast='high'][data-accent='amber'],
+.dark[data-contrast='high'][data-accent='rose'] {
+  --card: oklch(0.27 0.035 var(--accent-hue, 258));
+  --muted: oklch(0.34 0.035 var(--accent-hue, 258));
+  --secondary: oklch(0.36 0.04 var(--accent-hue, 258));
+  --accent: oklch(0.4 0.075 var(--accent-hue, 258));
+}
+
 .dark[data-accent='violet'] { --accent-hue: 290; }
 .dark[data-accent='teal'] { --accent-hue: 180; }
 .dark[data-accent='amber'] { --accent-hue: 75; }
