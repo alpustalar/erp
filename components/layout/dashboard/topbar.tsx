@@ -18,6 +18,7 @@ export function Topbar() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [accent, setAccent] = useState('blue');
   const [contrast, setContrast] = useState('standard');
+  const [persistSettings, setPersistSettings] = useState(false);
   const isSearchExpanded = searchFocused || searchQuery.length > 0;
 
   const current = clinics.find((c) => c.key === clinic);
@@ -30,12 +31,41 @@ export function Topbar() {
   ];
 
   useEffect(() => {
+    const saved = window.localStorage.getItem('erp-app-settings');
+    if (!saved) return;
+
+    try {
+      const settings = JSON.parse(saved) as {
+        accent?: string;
+        contrast?: string;
+      };
+      if (settings.accent) setAccent(settings.accent);
+      if (settings.contrast) setContrast(settings.contrast);
+      setPersistSettings(true);
+    } catch {
+      window.localStorage.removeItem('erp-app-settings');
+    }
+  }, []);
+
+  useEffect(() => {
     document.documentElement.dataset.accent = accent;
-  }, [accent]);
+    if (persistSettings) {
+      window.localStorage.setItem('erp-app-settings', JSON.stringify({ accent, contrast }));
+    }
+  }, [accent, contrast, persistSettings]);
 
   useEffect(() => {
     document.documentElement.dataset.contrast = contrast;
   }, [contrast]);
+
+  const updatePersistence = (enabled: boolean) => {
+    setPersistSettings(enabled);
+    if (enabled) {
+      window.localStorage.setItem('erp-app-settings', JSON.stringify({ accent, contrast }));
+    } else {
+      window.localStorage.removeItem('erp-app-settings');
+    }
+  };
 
   return (
     // 'w-full' ve sticky yapıyı koruyup çift padding çakışmasını engelliyoruz
@@ -184,8 +214,28 @@ export function Topbar() {
                   ))}
                 </div>
               </div>
-              <div className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
-                Ayarlarınız bu oturum için uygulanır.
+              <div className="mt-4 border-t border-border pt-3">
+                <label className="flex cursor-pointer items-center justify-between gap-3">
+                  <span className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-foreground">Ayarları hatırla</span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {persistSettings
+                        ? 'Ayarlarınız tüm oturumlarda uygulanır.'
+                        : 'Ayarlarınız bu oturum için uygulanır.'}
+                    </span>
+                  </span>
+                  <span className="relative flex size-9 shrink-0 items-center justify-center">
+                    <input
+                      type="checkbox"
+                      checked={persistSettings}
+                      onChange={(event) => updatePersistence(event.target.checked)}
+                      aria-label="Ayarları tüm oturumlarda uygula"
+                      className="peer sr-only"
+                    />
+                    <span className="pointer-events-none absolute h-5 w-9 rounded-full bg-muted transition-colors peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2" />
+                    <span className="pointer-events-none absolute left-1 size-3.5 rounded-full border border-border bg-background shadow-sm transition-transform peer-checked:translate-x-4" />
+                  </span>
+                </label>
               </div>
             </div>
           )}
