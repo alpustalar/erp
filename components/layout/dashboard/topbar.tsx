@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Bell, ChevronDown, Plus, Search } from 'lucide-react';
+import { Bell, Check, ChevronDown, Plus, Search, Settings2 } from 'lucide-react';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -15,9 +15,22 @@ export function Topbar() {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [accent, setAccent] = useState('blue');
   const isSearchExpanded = searchFocused || searchQuery.length > 0;
 
   const current = clinics.find((c) => c.key === clinic);
+  const accents = [
+    { key: 'blue', label: 'Okyanus', color: 'oklch(0.55 0.19 255)' },
+    { key: 'violet', label: 'Viyole', color: 'oklch(0.56 0.18 290)' },
+    { key: 'teal', label: 'Teal', color: 'oklch(0.54 0.14 180)' },
+    { key: 'amber', label: 'Amber', color: 'oklch(0.68 0.16 75)' },
+    { key: 'rose', label: 'Gül', color: 'oklch(0.59 0.18 15)' },
+  ];
+
+  useEffect(() => {
+    document.documentElement.dataset.accent = accent;
+  }, [accent]);
 
   return (
     // 'w-full' ve sticky yapıyı koruyup çift padding çakışmasını engelliyoruz
@@ -91,6 +104,61 @@ export function Topbar() {
         </div>
 
         <ThemeToggle />
+
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setSettingsOpen((value) => !value)}
+            aria-expanded={settingsOpen}
+            aria-label="Uygulama ayarlarını aç"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Settings2 className="animate-settings-spin h-[1.15rem] w-[1.15rem]" />
+          </button>
+
+          {settingsOpen && (
+            <div className="absolute right-0 top-12 z-40 w-72 rounded-xl border border-border bg-popover p-4 text-popover-foreground shadow-xl">
+              <div className="flex items-start justify-between gap-3 border-b border-border pb-3">
+                <div>
+                  <p className="text-sm font-semibold">Uygulama ayarları</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Çalışma alanınızı kişiselleştirin.</p>
+                </div>
+                <Settings2 className="mt-0.5 size-4 text-primary" />
+              </div>
+              <div className="pt-4">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Tema rengi</p>
+                <div className="grid grid-cols-5 gap-2" role="radiogroup" aria-label="Tema rengi">
+                  {accents.map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      role="radio"
+                      aria-checked={accent === item.key}
+                      aria-label={item.label}
+                      title={item.label}
+                      onClick={() => setAccent(item.key)}
+                      className="group flex flex-col items-center gap-1.5 rounded-lg p-1.5 transition-colors hover:bg-muted"
+                    >
+                      <span
+                        className={cn(
+                          'flex size-8 items-center justify-center rounded-full ring-offset-2 ring-offset-popover transition-shadow',
+                          accent === item.key && 'ring-2 ring-ring'
+                        )}
+                        style={{ backgroundColor: item.color }}
+                      >
+                        {accent === item.key && <Check className="size-4 text-white" />}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-3 text-xs text-muted-foreground">
+                Ayarlarınız bu oturum için uygulanır.
+              </div>
+            </div>
+          )}
+        </div>
 
         <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer transition-colors">
           <Bell className="h-[1.15rem] w-[1.15rem]" />
