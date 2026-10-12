@@ -194,6 +194,23 @@ html[data-contrast='high'] {
   --muted: oklch(0.34 0.035 258);
 }
 
+/* Accent palettes keep dark surfaces dark while preserving each theme's hue. */
+.dark[data-accent='blue'],
+.dark[data-accent='violet'],
+.dark[data-accent='teal'],
+.dark[data-accent='amber'],
+.dark[data-accent='rose'] {
+  --card: oklch(0.235 0.028 var(--accent-hue, 258));
+  --muted: oklch(0.27 0.026 var(--accent-hue, 258));
+  --secondary: oklch(0.29 0.028 var(--accent-hue, 258));
+  --accent: oklch(0.32 0.06 var(--accent-hue, 258));
+}
+
+.dark[data-accent='violet'] { --accent-hue: 290; }
+.dark[data-accent='teal'] { --accent-hue: 180; }
+.dark[data-accent='amber'] { --accent-hue: 75; }
+.dark[data-accent='rose'] { --accent-hue: 15; }
+
 @keyframes settings-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
