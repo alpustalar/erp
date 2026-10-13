@@ -2,12 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Bell, Check, ChevronDown, Plus, Search, Settings2 } from 'lucide-react';
+import { Bell, Check, ChevronDown, Search, Settings, UserRound } from 'lucide-react';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/dashboard/theme-toggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 export function Topbar() {
   const t = useTranslations();
@@ -16,6 +24,7 @@ export function Topbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [accent, setAccent] = useState('blue');
   const [contrast, setContrast] = useState('standard');
   const [persistSettings, setPersistSettings] = useState(false);
@@ -148,7 +157,7 @@ export function Topbar() {
             aria-label="Uygulama ayarlarını aç"
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
-            <Settings2 className="animate-settings-spin h-[1.15rem] w-[1.15rem]" />
+            <Settings className="animate-settings-spin h-[1.15rem] w-[1.15rem]" />
           </button>
 
           {settingsOpen && (
@@ -158,7 +167,7 @@ export function Topbar() {
                   <p className="text-sm font-semibold">Uygulama ayarları</p>
                   <p className="mt-1 text-xs text-muted-foreground">Çalışma alanınızı kişiselleştirin.</p>
                 </div>
-                <Settings2 className="mt-0.5 size-4 text-primary" />
+                <Settings className="mt-0.5 size-4 text-primary" />
               </div>
               <div className="pt-4">
                 <p className="mb-2 text-xs font-medium text-muted-foreground">Tema rengi</p>
@@ -246,10 +255,53 @@ export function Topbar() {
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
         </button>
 
-        <Button className="gap-1.5 cursor-pointer">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Yeni Kayıt</span>
-        </Button>
+        <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
+          <SheetTrigger
+            render={
+              <button
+                type="button"
+                aria-label="Profil panelini aç"
+                className="flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              />
+            }
+          >
+            <span className="flex size-6 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+              ZK
+            </span>
+            <span className="hidden md:inline">Zeynep Kaya</span>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-full sm:max-w-md">
+            <SheetHeader className="border-b border-border px-5 py-5">
+              <SheetTitle>Profilim</SheetTitle>
+              <SheetDescription>Hesap bilgilerinizi ve çalışma tercihlerinizi yönetin.</SheetDescription>
+            </SheetHeader>
+            <div className="flex flex-col gap-6 overflow-y-auto px-5 py-6">
+              <div className="flex items-center gap-4">
+                <div className="flex size-16 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
+                  ZK
+                </div>
+                <div>
+                  <p className="font-semibold text-foreground">Zeynep Kaya</p>
+                  <p className="text-sm text-muted-foreground">Klinik yöneticisi</p>
+                </div>
+              </div>
+              <div className="grid gap-3 rounded-xl border border-border bg-card p-4">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">E-posta</p>
+                  <p className="mt-1 text-sm text-foreground">zeynep.kaya@novaclinic.com</p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">Aktif klinik</p>
+                  <p className="mt-1 text-sm text-foreground">Tüm klinikler</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-4">
+                <UserRound className="size-4 text-primary" />
+                <p className="text-sm text-muted-foreground">Profil ayarları yakında burada olacak.</p>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );
