@@ -279,6 +279,21 @@ html[data-contrast='high'] {
   animation: settings-spin 8s linear infinite;
 }
 
+@keyframes sheet-shake {
+  0%, 100% { transform: translateX(0); }
+  12.5% { transform: translateX(-8px); }
+  25% { transform: translateX(8px); }
+  37.5% { transform: translateX(-7px); }
+  50% { transform: translateX(7px); }
+  62.5% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+  87.5% { transform: translateX(-3px); }
+}
+
+.animate-sheet-shake {
+  animation: sheet-shake 520ms ease-in-out;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

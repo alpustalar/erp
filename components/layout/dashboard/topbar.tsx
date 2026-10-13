@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Bell, Check, ChevronDown, Search, Settings, UserRound } from 'lucide-react';
+import { Bell, Check, ChevronDown, Computer, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/dashboard/theme-toggle';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import {
   Sheet,
@@ -19,6 +19,7 @@ import {
 
 export function Topbar() {
   const t = useTranslations();
+  const { theme, setTheme } = useTheme();
   const [clinic, setClinic] = useState<ClinicKey>('all');
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -147,8 +148,6 @@ export function Topbar() {
           />
         </div>
 
-        <ThemeToggle />
-
         <div className="relative">
           <button
             type="button"
@@ -170,6 +169,36 @@ export function Topbar() {
                 <Settings className="mt-0.5 size-4 text-primary" />
               </div>
               <div className="pt-4">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">Görünüm</p>
+                <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1" role="radiogroup" aria-label="Görünüm modu">
+                  {[
+                    { key: 'light', label: 'Açık', icon: Sun },
+                    { key: 'dark', label: 'Koyu', icon: Moon },
+                    { key: 'system', label: 'Sistem', icon: Computer },
+                  ].map((item) => {
+                    const ModeIcon = item.icon;
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        role="radio"
+                        aria-checked={theme === item.key}
+                        aria-label={item.label}
+                        title={item.key === 'system' ? 'Sistem' : item.label}
+                        onClick={() => setTheme(item.key)}
+                        className={cn(
+                          'flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] transition-colors',
+                          theme === item.key ? 'bg-card font-medium text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        <ModeIcon data-icon="inline-start" />
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-4">
                 <p className="mb-2 text-xs font-medium text-muted-foreground">Tema rengi</p>
                 <div className="grid grid-cols-5 gap-2" role="radiogroup" aria-label="Tema rengi">
                   {accents.map((item) => (
