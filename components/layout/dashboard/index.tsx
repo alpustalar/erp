@@ -20,7 +20,7 @@ function DashboardContent({ children }: Props) {
         </header>
 
         {/* Ana Sayfa İçeriği */}
-        <main className="flex-1 p-0  overflow-y-auto">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto bg-muted/20">{children}</main>
       </SidebarInset>
     </NavigationSidebar.Provider>
   );

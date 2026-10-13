@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useTranslations } from 'next-intl';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { Activity, ChevronDown, ChevronLeft } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -41,9 +42,40 @@ function SidebarMain() {
   const t = useTranslations();
 
   const { state, toggleSidebar } = useSidebar();
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
   const isCollapsed = state === 'collapsed';
+  const locale = params.locale ?? 'en';
 
-  const [activeKey, setActiveKey] = React.useState('Navigation.items.overview');
+  const routeSlugs: Record<string, string> = {
+    'Navigation.items.overview': '',
+    'Navigation.items.patients': 'patients',
+    'Navigation.items.appointments': 'appointments',
+    'Navigation.items.medicalFiles': 'medical-files',
+    'Navigation.items.consentForms': 'consent-forms',
+    'Navigation.items.treatmentsAndPackages': 'treatments',
+    'Navigation.items.specialists': 'specialists',
+    'Navigation.items.omnichannelMessaging': 'inbox',
+    'Navigation.items.leadAndMetaAds': 'leads',
+    'Navigation.items.salesPipeline': 'sales-pipeline',
+    'Navigation.items.crmActivities': 'crm-activities',
+    'Navigation.items.healthTourism': 'health-tourism',
+    'Navigation.items.generalLedger': 'general-ledger',
+    'Navigation.items.invoicesAndFees': 'invoices',
+    'Navigation.items.paymentsAndPos': 'payments',
+    'Navigation.items.cashAndBank': 'cash-bank',
+    'Navigation.items.payroll': 'payroll',
+    'Navigation.items.stockAndInventory': 'inventory',
+    'Navigation.items.procurement': 'procurement',
+    'Navigation.items.workOrders': 'work-orders',
+    'Navigation.items.staffList': 'staff',
+    'Navigation.items.timeAndAttendance': 'attendance',
+    'Navigation.items.leaveManagement': 'leave-management',
+  };
+
+  const slugifyRoute = (translationKey: string) => routeSlugs[translationKey] ?? translationKey.split('.').at(-1)?.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() ?? 'workspace';
+  const activeModule = pathname.split('/').filter(Boolean).at(-1) ?? '';
   const [openMenus, setOpenMenus] = React.useState<Record<string, boolean>>({});
 
   const toggleMenu = (key: string) => {
@@ -108,7 +140,7 @@ function SidebarMain() {
       </SidebarHeader>
 
       {/* Navigation */}
-      <SidebarContent className={cn('py-4', isCollapsed ? 'px-1' : 'px-2')}>
+      <SidebarContent className={cn('py-5', isCollapsed ? 'px-1' : 'px-2')}>
         {navGroups.map((group) => {
           const groupTitle = t(group.groupKey);
 
@@ -124,7 +156,10 @@ function SidebarMain() {
                 <SidebarMenu>
                   {group.items.map((item) => {
                     const itemLabel = t(item.translationKey);
-                    const isActive = activeKey === item.translationKey;
+                    const itemModule = slugifyRoute(item.translationKey);
+                    const isActive = item.translationKey === 'Navigation.items.overview'
+                      ? pathname === `/${locale}` || pathname === `/${locale}/`
+                      : pathname.split('/').includes(itemModule);
 
                     const hasChildren =
                       !isCollapsed && Boolean(item.children?.length);
@@ -137,10 +172,11 @@ function SidebarMain() {
                           isActive={isActive && (!hasChildren || isCollapsed)}
                           tooltip={itemLabel}
                           onClick={() => {
+                            router.push(
+                              itemModule ? `/${locale}/${itemModule}` : `/${locale}`
+                            );
                             if (hasChildren) {
                               toggleMenu(item.translationKey);
-                            } else {
-                              setActiveKey(item.translationKey);
                             }
                           }}
                           className="cursor-pointer"
@@ -178,8 +214,8 @@ function SidebarMain() {
                           <SidebarMenuSub className="relative my-1 ml-4 space-y-1 border-l border-sidebar-border/60 pl-3">
                             {item.children?.map((child, index, arr) => {
                               const childLabel = t(child.translationKey);
-                              const isChildActive =
-                                activeKey === child.translationKey;
+                              const childModule = slugifyRoute(child.translationKey);
+                              const isChildActive = pathname.split('/').includes(childModule);
                               const isLast = index === arr.length - 1;
 
                               return (
@@ -197,9 +233,9 @@ function SidebarMain() {
 
                                   <SidebarMenuSubButton
                                     isActive={isChildActive}
-                                    onClick={() =>
-                                      setActiveKey(child.translationKey)
-                                    }
+                                    onClick={() => {
+                                      router.push(`/${locale}/${childModule}`);
+                                    }}
                                     className="cursor-pointer"
                                   >
                                     <span className="flex-1 truncate">
