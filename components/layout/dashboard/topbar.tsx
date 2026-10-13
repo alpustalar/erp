@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Bell, Check, ChevronDown, Computer, Languages, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { usePathname, useRouter, useParams } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,8 +23,7 @@ export function Topbar() {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
-  const params = useParams<{ locale: string }>();
-  const locale = params.locale ?? 'tr';
+  const locale = useLocale();
   const [clinic, setClinic] = useState<ClinicKey>('all');
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -214,8 +213,7 @@ export function Topbar() {
                       aria-checked={locale === item.key}
                       onClick={() => {
                         if (locale === item.key) return;
-                        const pathWithoutLocale = pathname.replace(/^\/(tr|en)(?=\/|$)/, '') || '/';
-                        router.push(`/${item.key}${pathWithoutLocale}`);
+                        router.replace(pathname, { locale: item.key as 'tr' | 'en' });
                       }}
                       className={cn('rounded-md px-2 py-1.5 text-xs transition-colors', locale === item.key ? 'bg-card font-medium text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
                     >
