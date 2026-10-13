@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Bell, Check, ChevronDown, Computer, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Bell, Check, ChevronDown, Computer, Languages, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { usePathname, useRouter } from '@/i18n/navigation';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { NotificationDropdown } from '@/components/notifications/notification-center';
+import { useNotifications } from '@/components/notifications/notification-provider';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import {
   Sheet,
@@ -20,12 +23,17 @@ import {
 export function Topbar() {
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
   const [clinic, setClinic] = useState<ClinicKey>('all');
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { unreadCount } = useNotifications();
   const [accent, setAccent] = useState('blue');
   const [contrast, setContrast] = useState('standard');
   const [persistSettings, setPersistSettings] = useState(false);
@@ -199,6 +207,26 @@ export function Topbar() {
                 </div>
               </div>
               <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground"><Languages className="size-4 text-primary" />Uygulama dili</div>
+                <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1" role="radiogroup" aria-label="Uygulama dili">
+                  {[{ key: 'tr', label: 'Türkçe' }, { key: 'en', label: 'English' }].map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      role="radio"
+                      aria-checked={locale === item.key}
+                      onClick={() => {
+                        if (locale === item.key) return;
+                        router.replace(pathname, { locale: item.key as 'tr' | 'en' });
+                      }}
+                      className={cn('rounded-md px-2 py-1.5 text-xs transition-colors', locale === item.key ? 'bg-card font-medium text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-4">
                 <p className="mb-2 text-xs font-medium text-muted-foreground">Tema rengi</p>
                 <div className="grid grid-cols-5 gap-2" role="radiogroup" aria-label="Tema rengi">
                   {accents.map((item) => (
@@ -279,10 +307,13 @@ export function Topbar() {
           )}
         </div>
 
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer transition-colors">
-          <Bell className="h-[1.15rem] w-[1.15rem]" />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
-        </button>
+        <div className="relative">
+          <button type="button" aria-label={t('Notifications.actions.open')} aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen((value) => !value)} className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer transition-colors">
+            <Bell className="h-[1.15rem] w-[1.15rem]" />
+            {unreadCount > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />}
+          </button>
+          {notificationsOpen && <NotificationDropdown onClose={() => setNotificationsOpen(false)} />}
+        </div>
 
         <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
           <SheetTrigger

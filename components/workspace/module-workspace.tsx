@@ -102,13 +102,19 @@ const modules = {
 
 type ModuleKey = keyof typeof modules;
 type Appointment = {
+    id: string;
     time: string;
     patient: string;
     type: string;
     clinic: string;
     doctor: string;
     status: string;
-    endTime: string
+    endTime: string;
+    date: string;
+    patientDetail: { id: string; firstName: string; lastName: string | null; phone: string | null; email: string | null; tcNo: string | null };
+    providerDetail: { id: string; title: string | null; specialty: string | null; user: { id: string; displayName: string | null } | null; publicPhone: string | null; publicEmail: string | null };
+    treatmentDetail?: { id: string; slug: string; duration: number | null; sutCode: string | null };
+    clinicDetail: { id: string; name: string; slug: string; timezone: string; phone: string | null; address: string | null };
 };
 const providers = ['Tümü', ...Array.from(new Set(sourceAppointments.map((item) => item.doctor)))];
 const clinics = ['Tüm klinikler', ...Array.from(new Set(sourceAppointments.map((item) => item.clinic)))];
@@ -122,10 +128,21 @@ const statusVariant = (value: string) => ['Aktif', 'Onaylandı', 'Ödendi', 'Yet
 const appointmentStatus = (value: string) => value === 'confirmed' ? 'secondary' as const : value === 'cancelled' ? 'destructive' as const : 'outline' as const;
 const hours = Array.from({length: 12}, (_, index) => `${String(index + 8).padStart(2, '0')}:00`);
 const dayNames = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum'];
-const appointments: Appointment[] = sourceAppointments.map((item, index) => ({
-    ...item,
-    endTime: index === 2 ? '11:15' : `${String(Number(item.time.slice(0, 2)) + 1).padStart(2, '0')}:${item.time.slice(3)}`
-}));
+const appointments: Appointment[] = sourceAppointments.map((item, index) => {
+    const patientNames = item.patient.split(' ');
+    const firstName = patientNames.shift() ?? item.patient;
+    const lastName = patientNames.join(' ') || null;
+    return {
+        ...item,
+        id: `apt-${index + 1}`,
+        date: '2026-08-13',
+        endTime: index === 2 ? '11:15' : `${String(Number(item.time.slice(0, 2)) + 1).padStart(2, '0')}:${item.time.slice(3)}`,
+        patientDetail: { id: `patient-${index + 1}`, firstName, lastName, phone: index === 0 ? '0532 481 22 18' : index === 1 ? '+44 20 7946 0912' : '0555 209 45 61', email: index === 0 ? 'elif.yildiz@example.com' : null, tcNo: index === 0 ? '12345678901' : null },
+        providerDetail: { id: `provider-${index + 1}`, title: item.doctor.startsWith('Dr.') ? 'Dr.' : 'Op. Dr.', specialty: item.type.includes('İmplant') ? 'Diş Hekimliği' : item.type.includes('Saç') ? 'Plastik Cerrahi' : 'Estetik Cerrahi', user: { id: `user-${index + 1}`, displayName: item.doctor }, publicPhone: null, publicEmail: null },
+        treatmentDetail: { id: `treatment-${index + 1}`, slug: item.type.toLocaleLowerCase('tr').replaceAll(' ', '-'), duration: index === 2 ? 60 : 45, sutCode: null },
+        clinicDetail: { id: `clinic-${index + 1}`, name: item.clinic, slug: item.clinic.toLocaleLowerCase('tr').replaceAll(' ', '-'), timezone: 'Europe/Istanbul', phone: '+90 212 555 10 10', address: 'Levent, İstanbul' }
+    };
+});
 
 export function ModuleWorkspace({module}: { module: string }) {
     if (module === 'appointments') return <AppointmentsWorkspace/>;
@@ -547,16 +564,21 @@ function WaitingRoom({items, onSelect}: { items: Appointment[]; onSelect: (item:
 }
 
 function AppointmentDetails({item}: { item: Appointment }) {
+    const patient = item.patientDetail;
+    const provider = item.providerDetail;
+    const clinic = item.clinicDetail;
+    const treatment = item.treatmentDetail;
     return <div className="flex flex-col gap-4 px-4 pb-4 text-sm">
-        <div className="rounded-lg border bg-muted/20 p-4">
-            <div className="text-lg font-semibold">{item.patient}</div>
-            <div className="mt-1 text-muted-foreground">{item.time}–{item.endTime} · Europe/Istanbul</div>
+        <div className="rounded-xl border bg-muted/20 p-4">
+            <div className="flex items-start justify-between gap-3">
+                <div><div className="text-lg font-semibold">{patient.firstName} {patient.lastName}</div><div className="mt-1 text-muted-foreground">{item.date} · {item.time}–{item.endTime} · {clinic.timezone}</div></div>
+                <Badge variant={appointmentStatus(item.status)}>{statusLabels[item.status] ?? item.status}</Badge>
+            </div>
         </div>
-        {[['Uzman', item.doctor], ['Klinik', item.clinic], ['Tedavi', item.type], ['Durum', statusLabels[item.status] ?? item.status]].map(([label, value]) =>
-            <div key={label} className="flex items-center justify-between border-b pb-3"><span
-                className="text-muted-foreground">{label}</span><span className="font-medium">{value}</span></div>)}
-        <div className="flex flex-wrap gap-2"><Button variant="outline" size="sm">Düzenle</Button><Button size="sm">Check-in
-            yap</Button></div>
+        <div className="rounded-xl border p-4"><div className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Hasta</div><div className="grid gap-3 sm:grid-cols-2">{[['Telefon', patient.phone], ['E-posta', patient.email], ['TC kimlik', patient.tcNo]].map(([label, value]) => <div key={label}><div className="text-xs text-muted-foreground">{label}</div><div className="mt-1 font-medium">{value ?? '—'}</div></div>)}</div></div>
+        <div className="rounded-xl border p-4"><div className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Doktor ve tedavi</div><div className="grid gap-3 sm:grid-cols-2">{[['Doktor', provider.user?.displayName ?? provider.title], ['Uzmanlık', provider.specialty], ['Tedavi', treatment?.slug ?? item.type], ['Süre', treatment?.duration ? `${treatment.duration} dakika` : '—']].map(([label, value]) => <div key={label}><div className="text-xs text-muted-foreground">{label}</div><div className="mt-1 font-medium">{value ?? '—'}</div></div>)}</div></div>
+        <div className="rounded-xl border p-4"><div className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Klinik</div><div className="font-medium">{clinic.name}</div><div className="mt-1 text-muted-foreground">{clinic.address ?? '—'}</div><div className="mt-2 text-xs text-muted-foreground">{clinic.phone ?? 'Telefon bilgisi yok'}</div></div>
+        <div className="flex flex-wrap gap-2"><Button variant="outline" size="sm">Düzenle</Button><Button size="sm">Check-in yap</Button></div>
     </div>;
 }
 
