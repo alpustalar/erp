@@ -8,6 +8,8 @@ import { usePathname, useRouter } from '@/i18n/navigation';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { NotificationDropdown } from '@/components/notifications/notification-center';
+import { useNotifications } from '@/components/notifications/notification-provider';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import {
   Sheet,
@@ -30,6 +32,8 @@ export function Topbar() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const { unreadCount } = useNotifications();
   const [accent, setAccent] = useState('blue');
   const [contrast, setContrast] = useState('standard');
   const [persistSettings, setPersistSettings] = useState(false);
@@ -303,10 +307,13 @@ export function Topbar() {
           )}
         </div>
 
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer transition-colors">
-          <Bell className="h-[1.15rem] w-[1.15rem]" />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />
-        </button>
+        <div className="relative">
+          <button type="button" aria-label={t('Notifications.actions.open')} aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen((value) => !value)} className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground hover:bg-muted cursor-pointer transition-colors">
+            <Bell className="h-[1.15rem] w-[1.15rem]" />
+            {unreadCount > 0 && <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-destructive ring-2 ring-card" />}
+          </button>
+          {notificationsOpen && <NotificationDropdown onClose={() => setNotificationsOpen(false)} />}
+        </div>
 
         <Sheet open={profileOpen} onOpenChange={setProfileOpen}>
           <SheetTrigger
