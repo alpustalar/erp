@@ -1,5 +1,5 @@
-import { ModuleWorkspace } from '@/components/workspace/module-workspace';
+import { ModuleTable } from '@/components/module-table/module-table';
 
 export default function FinancePage() {
-  return <ModuleWorkspace module="finance" />;
+  return <ModuleTable module="finance" />;
 }

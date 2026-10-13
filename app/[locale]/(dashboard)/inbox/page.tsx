@@ -1,5 +1,5 @@
-import { ModuleWorkspace } from '@/components/workspace/module-workspace';
+import { ChatWorkspace } from './_components/chat-workspace';
 
 export default function InboxPage() {
-  return <ModuleWorkspace module="inbox" />;
+  return <ChatWorkspace />;
 }

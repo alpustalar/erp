@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 import { navGroups } from '@/constants/navigation/sidebar-nav';
 
 import {
-  Sidebar as ShadcnSidebar,
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -88,7 +88,7 @@ function SidebarMain() {
   };
 
   return (
-    <ShadcnSidebar collapsible="icon" className="z-40">
+    <Sidebar collapsible="icon" className="z-40">
       <button
         type="button"
         onClick={toggleSidebar}
@@ -301,7 +301,7 @@ function SidebarMain() {
           </div>
         )}
       </SidebarFooter>
-    </ShadcnSidebar>
+    </Sidebar>
   );
 }
 

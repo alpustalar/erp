@@ -1,4 +1,4 @@
-import { PatientProfileWorkspace } from '@/components/patients/patient-profile-workspace';
+import { PatientProfileWorkspace } from './_components/patient-profile-workspace';
 
 type PatientProfilePageProps = {
   params: Promise<{ patientId: string }>;

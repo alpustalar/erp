@@ -1,5 +1,5 @@
-import { ModuleWorkspace } from '@/components/workspace/module-workspace';
+import { ModuleTable } from '@/components/module-table/module-table';
 
 export default function CrmPage() {
-  return <ModuleWorkspace module="crm" />;
+  return <ModuleTable module="crm" />;
 }

@@ -1,12 +1,12 @@
-import { KpiCards } from '@/components/dashboard/kpi-cards';
-import { RevenueChart } from '@/components/dashboard/revenue-chart';
-import { LeadsPanel } from '@/components/dashboard/leads-panel';
-import { AppointmentsPanel } from '@/components/dashboard/appointments-panel';
-import { OmnichannelPanel } from '@/components/dashboard/omnichannel-panel';
-import { PaymentsPanel } from '@/components/dashboard/payments-panel';
-import { TourismPanel } from '@/components/dashboard/tourism-panel';
-import { PatientsPanel } from '@/components/dashboard/patients-panel';
-import { OperationsPanel } from '@/components/dashboard/operations-panel';
+import { KpiCards } from './_components/kpi-cards';
+import { RevenueChart } from './_components/revenue-chart';
+import { LeadsPanel } from './_components/leads-panel';
+import { AppointmentsPanel } from './_components/appointments-panel';
+import { OmnichannelPanel } from './_components/omnichannel-panel';
+import { PaymentsPanel } from './_components/payments-panel';
+import { TourismPanel } from './_components/tourism-panel';
+import { PatientsPanel } from './_components/patients-panel';
+import { OperationsPanel } from './_components/operations-panel';
 
 export default function DashboardPage() {
   return (

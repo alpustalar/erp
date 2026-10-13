@@ -1,5 +1,5 @@
-import { ModuleWorkspace } from '@/components/workspace/module-workspace';
+import { AppointmentsWorkspace } from './_components/appointments-workspace';
 
 export default function AppointmentsPage() {
-  return <ModuleWorkspace module="appointments" />;
+  return <AppointmentsWorkspace />;
 }
