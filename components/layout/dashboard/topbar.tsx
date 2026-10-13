@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Bell, Check, ChevronDown, Computer, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
+import { Bell, Check, ChevronDown, Computer, Languages, Moon, Search, Settings, Sun, UserRound } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { usePathname, useRouter, useParams } from 'next/navigation';
 import { type ClinicKey, clinics } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,10 @@ import {
 export function Topbar() {
   const t = useTranslations();
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams<{ locale: string }>();
+  const locale = params.locale ?? 'tr';
   const [clinic, setClinic] = useState<ClinicKey>('all');
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -196,6 +201,27 @@ export function Topbar() {
                       </button>
                     );
                   })}
+                </div>
+              </div>
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="mb-2 flex items-center gap-2 text-xs font-medium text-muted-foreground"><Languages className="size-4 text-primary" />Uygulama dili</div>
+                <div className="grid grid-cols-2 gap-1 rounded-lg bg-muted p-1" role="radiogroup" aria-label="Uygulama dili">
+                  {[{ key: 'tr', label: 'Türkçe' }, { key: 'en', label: 'English' }].map((item) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      role="radio"
+                      aria-checked={locale === item.key}
+                      onClick={() => {
+                        if (locale === item.key) return;
+                        const pathWithoutLocale = pathname.replace(/^\/(tr|en)(?=\/|$)/, '') || '/';
+                        router.push(`/${item.key}${pathWithoutLocale}`);
+                      }}
+                      className={cn('rounded-md px-2 py-1.5 text-xs transition-colors', locale === item.key ? 'bg-card font-medium text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground')}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="mt-4 border-t border-border pt-4">
