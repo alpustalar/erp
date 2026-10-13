@@ -48,19 +48,33 @@ function SidebarMain() {
   const isCollapsed = state === 'collapsed';
   const locale = params.locale ?? 'en';
 
-  const moduleSlugs: Record<string, string> = {
+  const routeSlugs: Record<string, string> = {
     'Navigation.items.overview': '',
     'Navigation.items.patients': 'patients',
     'Navigation.items.appointments': 'appointments',
-    'Navigation.items.inventory': 'inventory',
-    'Navigation.items.finance': 'finance',
-    'Navigation.items.crm': 'crm',
-    'Navigation.items.marketing': 'marketing',
+    'Navigation.items.medicalFiles': 'medical-files',
+    'Navigation.items.consentForms': 'consent-forms',
+    'Navigation.items.treatmentsAndPackages': 'treatments',
+    'Navigation.items.specialists': 'specialists',
     'Navigation.items.omnichannelMessaging': 'inbox',
-    'Navigation.items.workforce': 'workforce',
-    'Navigation.items.automations': 'automations',
+    'Navigation.items.leadAndMetaAds': 'leads',
+    'Navigation.items.salesPipeline': 'sales-pipeline',
+    'Navigation.items.crmActivities': 'crm-activities',
+    'Navigation.items.healthTourism': 'health-tourism',
+    'Navigation.items.generalLedger': 'general-ledger',
+    'Navigation.items.invoicesAndFees': 'invoices',
+    'Navigation.items.paymentsAndPos': 'payments',
+    'Navigation.items.cashAndBank': 'cash-bank',
+    'Navigation.items.payroll': 'payroll',
+    'Navigation.items.stockAndInventory': 'inventory',
+    'Navigation.items.procurement': 'procurement',
+    'Navigation.items.workOrders': 'work-orders',
+    'Navigation.items.staffList': 'staff',
+    'Navigation.items.timeAndAttendance': 'attendance',
+    'Navigation.items.leaveManagement': 'leave-management',
   };
 
+  const slugifyRoute = (translationKey: string) => routeSlugs[translationKey] ?? translationKey.split('.').at(-1)?.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() ?? 'workspace';
   const activeModule = pathname.split('/').filter(Boolean).at(-1) ?? '';
   const [openMenus, setOpenMenus] = React.useState<Record<string, boolean>>({});
 
@@ -142,10 +156,10 @@ function SidebarMain() {
                 <SidebarMenu>
                   {group.items.map((item) => {
                     const itemLabel = t(item.translationKey);
-                    const itemModule = moduleSlugs[item.translationKey];
-                    const isActive = itemModule
-                      ? activeModule === itemModule
-                      : !activeModule && item.translationKey === 'Navigation.items.overview';
+                    const itemModule = slugifyRoute(item.translationKey);
+                    const isActive = item.translationKey === 'Navigation.items.overview'
+                      ? pathname === `/${locale}` || pathname === `/${locale}/`
+                      : pathname.split('/').includes(itemModule);
 
                     const hasChildren =
                       !isCollapsed && Boolean(item.children?.length);
@@ -200,7 +214,8 @@ function SidebarMain() {
                           <SidebarMenuSub className="relative my-1 ml-4 space-y-1 border-l border-sidebar-border/60 pl-3">
                             {item.children?.map((child, index, arr) => {
                               const childLabel = t(child.translationKey);
-                              const isChildActive = false;
+                              const childModule = slugifyRoute(child.translationKey);
+                              const isChildActive = pathname.split('/').includes(childModule);
                               const isLast = index === arr.length - 1;
 
                               return (
@@ -219,9 +234,7 @@ function SidebarMain() {
                                   <SidebarMenuSubButton
                                     isActive={isChildActive}
                                     onClick={() => {
-                                      if (itemModule) {
-                                        router.push(`/${locale}/${itemModule}`);
-                                      }
+                                      router.push(`/${locale}/${childModule}`);
                                     }}
                                     className="cursor-pointer"
                                   >
